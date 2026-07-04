@@ -46,10 +46,13 @@ export const calculateExercises = (
 
   if (periodLength === 0 || trainingDays === 0) {
     average = 0;
+  } else {
+    average =
+      days.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0,
+      ) / periodLength;
   }
-  average =
-    days.reduce((accumulator, currentValue) => accumulator + currentValue, 0) /
-    periodLength;
   const success = average >= target;
 
   let rating: number;
@@ -86,4 +89,5 @@ try {
   if (error instanceof Error) {
     errorMessage += error.message;
   }
+  console.log(errorMessage);
 }
