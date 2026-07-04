@@ -5,16 +5,16 @@ const app = express();
 app.use(express.json());
 
 app.get("/hello", (_, res) => {
-  res.send("hello fullstack");
+  res.send("Hello Full Stack!");
 });
 
 app.get("/bmi", (req, res) => {
   const { height, weight } = req.query;
   try {
     const result = calculateBmi(Number(height), Number(weight));
-    res.json(result);
+    res.status(200).json(result);
   } catch {
-    res.json({ error: "malformatted parameters" });
+    res.status(400).json({ error: "malformatted parameters" });
   }
 });
 
@@ -34,18 +34,25 @@ const isExerciseBody = (
   );
 };
 
-app.post("/exercise", (req, res) => {
-  if (!isExerciseBody(req.body)) {
-    res.status(400).json({ error: "malformatted body" });
+app.post("/exercises", (req, res) => {
+  const body = req.body as Record<string, unknown>;
+
+  if (!("daily_exercises" in body) || !("target" in body)) {
+    res.status(400).json({ error: "parameters missing" });
     return;
   }
 
-  const { daily_exercises, target } = req.body;
+  if (!isExerciseBody(body)) {
+    res.status(400).json({ error: "malformatted parameters" });
+    return;
+  }
+
+  const { daily_exercises, target } = body;
   const result = calculateExercises(daily_exercises, target);
-  res.json(result);
+  res.status(200).json(result);
 });
 
-const PORT = 3003;
+const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`Sevrer running on port ${PORT}`);

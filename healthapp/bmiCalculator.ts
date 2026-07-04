@@ -3,6 +3,12 @@ interface Metrics {
   weigth: number;
 }
 
+interface Results {
+  height: number;
+  weight: number;
+  bmi: string;
+}
+
 const parseArguments = (args: string[]): Metrics => {
   if (args.length < 4) throw new Error("Not enough arguments");
   if (args.length > 4) throw new Error("Too many arguments");
@@ -17,29 +23,34 @@ const parseArguments = (args: string[]): Metrics => {
   }
 };
 
-export const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): Results => {
   if (!height || !weight) {
-    throw new Error("height and weight can't be 0");
+    throw new Error("unvalid params");
   }
 
   const bmi = weight / ((height / 100) ^ 2);
 
+  const result = {
+    height,
+    weight,
+  };
+
   if (bmi < 16) {
-    return "Underweight (Severe thinness)";
+    return { ...result, bmi: "Underweight (Severe thinness)" };
   } else if (bmi < 17) {
-    return "Underweight (Moderate thinness)";
+    return { ...result, bmi: "Underweight (Moderate thinness)" };
   } else if (bmi < 18.5) {
-    return "Underweight (Mild thinness)";
+    return { ...result, bmi: "Underweight (Mild thinness)" };
   } else if (bmi < 25) {
-    return "Normal range";
+    return { ...result, bmi: "Normal range" };
   } else if (bmi < 30) {
-    return "Overweight (Pre-obese)";
+    return { ...result, bmi: "Overweight (Pre-obese)" };
   } else if (bmi < 35) {
-    return "Obese (Class I)";
+    return { ...result, bmi: "Obese (Class I)" };
   } else if (bmi < 40) {
-    return "Obese (Class II)";
+    return { ...result, bmi: "Obese (Class II)" };
   } else {
-    return "Obese (Class III)";
+    return { ...result, bmi: "Obese (Class III)" };
   }
 };
 

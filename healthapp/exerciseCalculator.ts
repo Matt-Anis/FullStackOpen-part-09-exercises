@@ -42,17 +42,10 @@ export const calculateExercises = (
   const periodLength = days.length;
   const trainingDays = days.filter((day) => day !== 0).length;
 
-  let average: number;
+  const average =
+    days.reduce((accumulator, currentValue) => accumulator + currentValue, 0) /
+    periodLength;
 
-  if (periodLength === 0 || trainingDays === 0) {
-    average = 0;
-  } else {
-    average =
-      days.reduce(
-        (accumulator, currentValue) => accumulator + currentValue,
-        0,
-      ) / periodLength;
-  }
   const success = average >= target;
 
   let rating: number;
