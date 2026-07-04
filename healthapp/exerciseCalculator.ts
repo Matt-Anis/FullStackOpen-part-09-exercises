@@ -8,7 +8,34 @@ interface TrainingResults {
   average: number;
 }
 
-const calculateExercises = (
+interface ParsingResults {
+  days: number[];
+  target: number;
+}
+
+const parseArguments = (args: string[]): ParsingResults => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const days = args.slice(2, -1).map((day) => {
+    if (isNaN(Number(day))) {
+      throw new Error("Provided values were not numbers!");
+    }
+    return Number(day);
+  });
+
+  const target = Number(args[args.length - 1]);
+
+  if (isNaN(target)) {
+    throw new Error("Provided values were not numbers!");
+  }
+
+  return {
+    days,
+    target,
+  };
+};
+
+export const calculateExercises = (
   days: number[],
   target: number,
 ): TrainingResults => {
@@ -31,8 +58,7 @@ const calculateExercises = (
   if (success) {
     rating = 3;
     ratingDescription = "Amazing! target achived";
-  }
-  if (average >= target * 0.65) {
+  } else if (average >= target * 0.65) {
     rating = 2;
     ratingDescription = "Not too bad but could be improved";
   } else {
@@ -51,4 +77,13 @@ const calculateExercises = (
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { days, target } = parseArguments(process.argv);
+
+  console.log(calculateExercises(days, target));
+} catch (error: unknown) {
+  let errorMessage = "something went wrong ";
+  if (error instanceof Error) {
+    errorMessage += error.message;
+  }
+}
