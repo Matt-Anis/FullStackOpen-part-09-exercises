@@ -18,7 +18,7 @@ const parseArguments = (args: string[]): Metrics => {
 };
 
 export const calculateBmi = (height: number, weight: number): string => {
-  if (height === 0 || weight === 0) {
+  if (!height || !weight) {
     throw new Error("height and weight can't be 0");
   }
 
