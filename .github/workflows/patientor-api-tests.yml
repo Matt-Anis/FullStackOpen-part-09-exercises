@@ -30,7 +30,7 @@ jobs:
         run: |
           npm start &
           echo $! > server.pid
-          sleep 3
+          npx wait-on http://localhost:3001/api/ping --timeout 15000
 
       - name: Install test dependencies
         working-directory: ./patientor-api-tests
