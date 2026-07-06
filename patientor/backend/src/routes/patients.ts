@@ -1,8 +1,9 @@
 import {
   type NonSensitivePatientEntery,
-  NewEnterySchema,
+  NewPatientEnterySchema,
   type PatientEntry,
   type NewPatientEntry,
+  type Patient,
 } from "../types.ts";
 import patientService from "../services/PatientService.ts";
 import express, {
@@ -15,7 +16,7 @@ const router = express.Router();
 
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
-    NewEnterySchema.parse(req.body);
+    NewPatientEnterySchema.parse(req.body);
     next();
   } catch (error: unknown) {
     next(error);
@@ -25,6 +26,15 @@ const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
 router.get("/", (_req, res: Response<NonSensitivePatientEntery[]>) => {
   const data = patientService.getNonSensitiveEntries();
   res.send(data);
+});
+
+router.get("/:id", (req: Request<{ id: string }>, res: Response) => {
+  const patient = patientService.getPatientById(req.params.id);
+  if (!patient) {
+    res.status(404).json({ error: "Patient not found" });
+    return;
+  }
+  res.json(patient);
 });
 
 router.post(
