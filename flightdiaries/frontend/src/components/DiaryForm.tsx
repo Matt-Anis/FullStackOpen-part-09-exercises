@@ -4,9 +4,10 @@ import diaryService from "../services/diaries";
 
 interface DiaryFormProps {
   setDiaries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
+  setNotification: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const DiaryForm = ({ setDiaries }: DiaryFormProps) => {
+const DiaryForm = ({ setDiaries, setNotification }: DiaryFormProps) => {
   const [date, setDate] = useState("");
   const [weather, setWeather] = useState<NewDiaryEntry["weather"]>("sunny");
   const [visibility, setVisibility] =
@@ -21,9 +22,14 @@ const DiaryForm = ({ setDiaries }: DiaryFormProps) => {
       visibility,
       comment,
     };
-
-    const newDiaryEntry = await diaryService.addDiary(newEntry);
-    setDiaries((prevDiaries) => [...prevDiaries, newDiaryEntry]);
+    try {
+      const newDiaryEntry = await diaryService.addDiary(newEntry);
+      setDiaries((prevDiaries) => [...prevDiaries, newDiaryEntry]);
+    } catch (error) {
+      setNotification(
+        error instanceof Error ? error.message : "An unknown error occurred",
+      );
+    }
   };
 
   return (
