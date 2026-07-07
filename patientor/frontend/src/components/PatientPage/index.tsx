@@ -26,6 +26,30 @@ const PatientPage = () => {
       <Typography>SSN: {patient.ssn}</Typography>
       <Typography>Occupation: {patient.occupation}</Typography>
       <Typography>Date of birth: {patient.dateOfBirth}</Typography>
+      <Typography variant="h5" sx={{ marginTop: "1em" }}>
+        Entries
+      </Typography>
+      {patient.entries.map((entry) => (
+        <Box
+          key={entry.id}
+          sx={{
+            marginTop: "1em",
+            padding: "1em",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+          }}
+        >
+          <Typography variant="h6">{entry.date}</Typography>
+          <Typography>{entry.description}</Typography>
+          {entry.diagnosisCodes && (
+            <ul>
+              {entry.diagnosisCodes.map((code) => (
+                <li key={code}>{code}</li>
+              ))}
+            </ul>
+          )}
+        </Box>
+      ))}
     </Box>
   );
 };
