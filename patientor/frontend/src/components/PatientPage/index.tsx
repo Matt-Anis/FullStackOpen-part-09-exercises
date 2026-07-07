@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Typography, Box } from "@mui/material";
-import { Patient, Diagnosis } from "../../types";
+import { Typography, Box, Button } from "@mui/material";
+import { Patient, Diagnosis, NewEntry, Entry } from "../../types";
 import patientService from "../../services/patients";
 import EntryDetails from "./EntryDetails";
+import AddEntryModal from "../AddEntryModal";
 
 interface PatientPageProps {
   diagnoses: Diagnosis[];
@@ -12,6 +13,8 @@ interface PatientPageProps {
 const PatientPage = ({ diagnoses }: PatientPageProps) => {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
     if (!id) return;
@@ -21,6 +24,27 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
     };
     void fetchPatient();
   }, [id]);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: NewEntry) => {
+    if (!id || !patient) return;
+    try {
+      const addedEntry: Entry = await patientService.addEntry(id, values);
+      setPatient({ ...patient, entries: patient.entries.concat(addedEntry) });
+      setModalOpen(false);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Unknown error");
+      }
+    }
+  };
 
   if (!patient) return <div>Loading...</div>;
 
@@ -47,6 +71,15 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
           <EntryDetails entry={entry} diagnoses={diagnoses} />
         </Box>
       ))}
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+        error={error}
+      />
+      <Button variant="contained" sx={{ marginTop: "1em" }} onClick={openModal}>
+        Add New Entry
+      </Button>
     </Box>
   );
 };

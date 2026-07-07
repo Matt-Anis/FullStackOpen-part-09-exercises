@@ -18,16 +18,6 @@ interface BaseEntry {
   diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
-const HealthCheckRating = {
-  Healthy: 0,
-  LowRisk: 1,
-  HighRisk: 2,
-  CriticalRisk: 3,
-} as const;
-
-type HealthCheckRating =
-  (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
-
 interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
   healthCheckRating: HealthCheckRating;
@@ -68,3 +58,19 @@ export interface Patient {
 export type NonSensitivePatient = Omit<Patient, "ssn" | "entries">;
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+
+export const HealthCheckRating = {
+  Healthy: 0,
+  LowRisk: 1,
+  HighRisk: 2,
+  CriticalRisk: 3,
+} as const;
+
+export type HealthCheckRating =
+  (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
+export type NewEntry = UnionOmit<Entry, "id">;

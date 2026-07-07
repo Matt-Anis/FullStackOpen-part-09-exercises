@@ -4,6 +4,7 @@ import type {
   PatientEntry,
   Patient,
   NewEntry,
+  Entry,
 } from "../types.ts";
 import patientsEnteries from "../data/patients.ts";
 import { v1 as uuid } from "uuid";
