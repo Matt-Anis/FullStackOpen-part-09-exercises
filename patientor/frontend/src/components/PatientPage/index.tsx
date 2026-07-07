@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
-import { Patient } from "../../types";
+import { Patient, Diagnosis } from "../../types";
 import patientService from "../../services/patients";
 
-const PatientPage = () => {
+interface PatientPageProps {
+  diagnoses: Diagnosis[];
+}
+
+const PatientPage = ({ diagnoses }: PatientPageProps) => {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
 
@@ -42,11 +46,19 @@ const PatientPage = () => {
           <Typography variant="h6">{entry.date}</Typography>
           <Typography>{entry.description}</Typography>
           {entry.diagnosisCodes && (
-            <ul>
-              {entry.diagnosisCodes.map((code) => (
-                <li key={code}>{code}</li>
-              ))}
-            </ul>
+            <Box sx={{ marginTop: "0.5em" }}>
+              <Typography variant="subtitle1">Diagnoses:</Typography>
+              <ul>
+                {entry.diagnosisCodes.map((code) => {
+                  const diagnosis = diagnoses.find((d) => d.code === code);
+                  return (
+                    <li key={code}>
+                      {code} {diagnosis ? diagnosis.name : ""}
+                    </li>
+                  );
+                })}
+              </ul>
+            </Box>
           )}
         </Box>
       ))}
