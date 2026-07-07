@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
 import { Patient, Diagnosis } from "../../types";
 import patientService from "../../services/patients";
+import EntryDetails from "./EntryDetails";
 
 interface PatientPageProps {
   diagnoses: Diagnosis[];
@@ -43,23 +44,7 @@ const PatientPage = ({ diagnoses }: PatientPageProps) => {
             borderRadius: "4px",
           }}
         >
-          <Typography variant="h6">{entry.date}</Typography>
-          <Typography>{entry.description}</Typography>
-          {entry.diagnosisCodes && (
-            <Box sx={{ marginTop: "0.5em" }}>
-              <Typography variant="subtitle1">Diagnoses:</Typography>
-              <ul>
-                {entry.diagnosisCodes.map((code) => {
-                  const diagnosis = diagnoses.find((d) => d.code === code);
-                  return (
-                    <li key={code}>
-                      {code} {diagnosis ? diagnosis.name : ""}
-                    </li>
-                  );
-                })}
-              </ul>
-            </Box>
-          )}
+          <EntryDetails entry={entry} diagnoses={diagnoses} />
         </Box>
       ))}
     </Box>
