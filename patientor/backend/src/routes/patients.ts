@@ -3,7 +3,6 @@ import {
   NewPatientEnterySchema,
   type PatientEntry,
   type NewPatientEntry,
-  type Patient,
 } from "../types.ts";
 import patientService from "../services/PatientService.ts";
 import express, {
