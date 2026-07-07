@@ -3,6 +3,7 @@ import {
   NewPatientEnterySchema,
   type PatientEntry,
   type NewPatientEntry,
+  NewEntrySchema,
 } from "../types.ts";
 import patientService from "../services/PatientService.ts";
 import express, {
@@ -47,5 +48,22 @@ router.post(
     res.json(addedEntry);
   },
 );
+
+router.post("/:id/entries", (req: Request<{ id: string }>, res: Response) => {
+  const patient = patientService.getPatientById(req.params.id);
+  if (!patient) {
+    res.status(404).json({ error: "Patient not found" });
+    return;
+  }
+
+  const result = NewEntrySchema.safeParse(req.body);
+  if (!result.success) {
+    res.status(400).json({ error: result.error.issues });
+    return;
+  }
+
+  const addedEntry = patientService.addEntry(patient, result.data);
+  res.json(addedEntry);
+});
 
 export default router;
